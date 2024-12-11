@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use GuzzleHttp\Psr7\Response;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        $data = $request->validate();
+        $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
         $data['username'] = strstr($data['email'], "@", true);
         $user = User::create($data);
@@ -28,7 +31,7 @@ class AuthController extends Controller
 
     private function isValidCredential(LoginRequest $request)
     {
-        $data = $request->validate();
+        $data = $request->validated();
         $user = User::where('email', $data['email'])->first();
         if ($user === null) {
             return [
@@ -53,7 +56,7 @@ class AuthController extends Controller
     {
         $isValid = $this->isValidCredential($request);
         if (!$isValid['success']) {
-            return $this->error($isValid['message'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->error($isValid['message'], HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
         $user = $isValid['user'];
         $token = $user->createToken(User::USER_TOKEN);
