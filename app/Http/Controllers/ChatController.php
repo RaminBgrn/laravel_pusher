@@ -42,7 +42,7 @@ class ChatController extends Controller
 
         if ($previousChat === null) {
             $chat = Chat::create($data['data']);
-            $chat->participants->createMany([
+            $chat->participants()->createMany([
                 [
                     'user_id' => $data['userId']
                 ],
@@ -50,10 +50,10 @@ class ChatController extends Controller
                     'user_id' => $data['otherUserId']
                 ],
             ]);
-            $chat->refresh()->load('lastMessage.user' , 'participant.user');
+            $chat->refresh()->load('lastMessage.user' , 'participants.user');
             return $this->success($chat);
         }
-        return $this->success($previousChat->load('lastMessage.user' , 'participant.user'));
+        return $this->success($previousChat->load('lastMessage.user' , 'participants.user'));
     }
 
     private function getPreviousChat(int $otherUserId)
