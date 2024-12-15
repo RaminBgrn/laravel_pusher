@@ -63,7 +63,7 @@ class ChatMessageController extends Controller
             $otherUser = User::where('id', $otherUserId)->first();
             $otherUser->sendNewMessageNotification([
                 "messageData" => [
-                    'senderName' => $user->name,
+                    'senderName' => $user->username,
                     'message' => $chatMessage->message,
                     'chatId' => $chatMessage->chat_id
                 ]
