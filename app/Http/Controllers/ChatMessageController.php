@@ -48,6 +48,7 @@ class ChatMessageController extends Controller
 
     private function sendNotificationToOther(ChatMessage $chatMessage)
     {
+        // error to send message
         broadcast(new NewMessageSent($chatMessage))->toOthers();
         $user = auth()->user();
         $userId = $user->id;
